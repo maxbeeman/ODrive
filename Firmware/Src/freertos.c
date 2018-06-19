@@ -70,6 +70,7 @@ osThreadId thread_motor_0;
 osThreadId thread_motor_1;
 osThreadId thread_cmd_parse;
 osThreadId thread_as5047p_0;
+osThreadId thread_as5047p_1;
 /* USER CODE END Variables */
 
 /* Function prototypes -------------------------------------------------------*/
@@ -145,8 +146,11 @@ void StartDefaultTask(void const * argument)
   // Init communications
   init_communication();
 
-  // osThreadDef(task_as5047p_0, AS5047P_thread, osPriorityHigh+2, 0, 512);
-  // thread_as5047p_0 = osThreadCreate(osThread(task_as5047p_0), &motors[0]);
+  osThreadDef(task_as5047p_0, AS5047P_thread, osPriorityHigh+3, 0, 512);
+  // osThreadDef(task_as5047p_1, AS5047P_thread, osPriorityHigh+2, 0, 512);
+
+  thread_as5047p_0 = osThreadCreate(osThread(task_as5047p_0), &motors[0]);
+  // thread_as5047p_1 = osThreadCreate(osThread(task_as5047p_1), &motors[1]);
 
   // while (1){
     // HAL_GPIO_WritePin(GPIO_3_GPIO_Port, GPIO_3_Pin, GPIO_PIN_SET);
@@ -167,7 +171,7 @@ void StartDefaultTask(void const * argument)
   osDelay(200);
 
   update_init_cnt_value(&motors[0]);
-  update_init_cnt_value(&motors[0]); //change this to M1?
+  update_init_cnt_value(&motors[1]); //Fixed Typo, made this 1. 
 
   osDelay(100);
 

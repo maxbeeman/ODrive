@@ -34,8 +34,8 @@
 float vbus_voltage = 12.0f;
 
 // TODO stick parameter into struct
-#define ENCODER_CPR (4000) // Default resolution of CUI-AMT102 encoder
-#define POLE_PAIRS 7 // This value is correct for N5065 motors and Turnigy SK3 series.
+#define ENCODER_CPR (4000) // 4000 is default resolution of CUI-AMT102 encoder. Made it for AS5147P
+#define POLE_PAIRS 15 // 7 is correct for N5065 motors and Turnigy SK3 series. Made it for 
 const float elec_rad_per_enc = POLE_PAIRS * 2 * M_PI * (1.0f / (float)ENCODER_CPR);
 
 uint16_t as5047p_data = 0;
@@ -234,7 +234,7 @@ Motor_t motors[] = {
         },
         .rotor_mode = ROTOR_MODE_ENCODER,
         .encoder = {
-            .encoder_timer = &htim3,
+            .encoder_timer = &htim4,
             .use_index = false,
             .index_found = false,
             .calibrated = true,
@@ -278,8 +278,8 @@ Motor_t motors[] = {
         },
         .AS5047PEncoder = {
             .spiHandle = &hspi3,
-            .nCSgpioHandle = GPIO_7_GPIO_Port,
-            .nCSgpioNumber = GPIO_7_Pin,
+            .nCSgpioHandle = GPIO_4_GPIO_Port,
+            .nCSgpioNumber = GPIO_4_Pin,
             .encoder_angle = 0.0f,
         }
     }
@@ -297,7 +297,7 @@ static float brake_resistance = 0.47f;  // [ohm]
 
 /* Function implementations --------------------------------------------------*/
 
-//--------------------------------d
+//--------------------------------
 // Command Handling
 //--------------------------------
 
@@ -957,7 +957,7 @@ bool scan_for_enc_idx(Motor_t* motor, float omega, float voltage_magnitude) {
 
 bool update_init_cnt_value(Motor_t* argument){
 
-    // Motor_t* motor = (Motor_t*)argument;
+    Motor_t* motor = (Motor_t*)argument;
 
     //Motor_t* motor = (Motor_t*)&motors[0];
 
@@ -995,18 +995,18 @@ void test_encoder(){
 
     set_pos_setpoint(motor, AS5047PEncoder->encoder_cnt, 0.0f, 0.0f);
 
-    //for M1
-    Motor_t* motor = (Motor_t*)&motors[1];
-    AS5047P_Obj* AS5047PEncoder = &motor->AS5047PEncoder;
-    as5047p_data = AS5047P_readPosition(AS5047PEncoder);
-    osDelay(100);
-    as5047p_data = as5047p_data & 0x3FFF;
-    AS5047PEncoder->encoder_angle = (as5047p_data/16383.0)*360;
-    AS5047PEncoder->encoder_cnt = (as5047p_data) * 4000/16383;
+    // //for M1
+    // Motor_t* motor = (Motor_t*)&motors[1];
+    // AS5047P_Obj* AS5047PEncoder = &motor->AS5047PEncoder;
+    // as5047p_data = AS5047P_readPosition(AS5047PEncoder);
+    // osDelay(100);
+    // as5047p_data = as5047p_data & 0x3FFF;
+    // AS5047PEncoder->encoder_angle = (as5047p_data/16383.0)*360;
+    // AS5047PEncoder->encoder_cnt = (as5047p_data) * 4000/16383;
 
-    setEncoderCount(motor, (uint32_t)AS5047PEncoder->encoder_cnt);
+    // setEncoderCount(motor, (uint32_t)AS5047PEncoder->encoder_cnt);
 
-    set_pos_setpoint(motor, AS5047PEncoder->encoder_cnt, 0.0f, 0.0f);
+    // set_pos_setpoint(motor, AS5047PEncoder->encoder_cnt, 0.0f, 0.0f);
 
 }
 //--------------------------------
@@ -1491,5 +1491,6 @@ void AS5047P_thread(void const * argument){
         osDelay(100);
         as5047p_data = as5047p_data & 0x3FFF;
         AS5047PEncoder->encoder_angle = (as5047p_data/16383.0)*360;
+        AS5047PEncoder->encoder_cnt = (as5047p_data) * 4000/16383;
     }
 }

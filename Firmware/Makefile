@@ -93,12 +93,14 @@ ASM_SOURCES = \
 #######################################
 # binaries
 #######################################
-CC = arm-none-eabi-gcc
-CXX = arm-none-eabi-g++
-AS = arm-none-eabi-gcc -x assembler-with-cpp
-CP = arm-none-eabi-objcopy
-AR = arm-none-eabi-ar
-SZ = arm-none-eabi-size
+
+
+CC = "${HOME}"/opt/gcc-arm-none-eabi-7-2017-q4-major/bin/arm-none-eabi-gcc
+CXX = "${HOME}"/opt/gcc-arm-none-eabi-7-2017-q4-major/bin/arm-none-eabi-g++
+AS = "${HOME}"/opt/gcc-arm-none-eabi-7-2017-q4-major/bin/arm-none-eabi-gcc -x assembler-with-cpp
+CP = "${HOME}"/opt/gcc-arm-none-eabi-7-2017-q4-major/bin/arm-none-eabi-objcopy
+AR = "${HOME}"/opt/gcc-arm-none-eabi-7-2017-q4-major/bin/arm-none-eabi-ar
+SZ = "${HOME}"/opt/gcc-arm-none-eabi-7-2017-q4-major/bin/arm-none-eabi-size
 HEX = $(CP) -O ihex
 BIN = $(CP) -O binary -S
  

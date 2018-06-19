@@ -13,6 +13,7 @@
 
 // Port
 typedef SPI_HandleTypeDef* SPI_Handle;
+
 typedef GPIO_TypeDef* GPIO_Handle;
 typedef uint16_t GPIO_Number_e;
 

@@ -333,7 +333,7 @@ void init_communication(void) {
 // read commands out of the UART DMA circular buffer
 void communication_task(void const * argument) {
     (void) argument;
-
+    
 
 #if !defined(UART_PROTOCOL_NONE)
     //DMA open loop continous circular buffer

@@ -202,6 +202,10 @@ const Endpoint endpoints[] = {
             Endpoint::make_property("encoder_state", &motors[1].encoder.encoder_state),
             Endpoint::make_property("motor_dir", &motors[1].encoder.motor_dir),
         Endpoint::close_tree(),
+        Endpoint::make_object("AS5047PEncoder"),
+            Endpoint::make_property("encoder_angle", &motors[1].AS5047PEncoder.encoder_angle),
+            Endpoint::make_property("encoder_cnt", &motors[1].AS5047PEncoder.encoder_cnt),
+        Endpoint::close_tree(),
         Endpoint::make_function("set_pos_setpoint", &motors_1_set_pos_setpoint_func),
             Endpoint::make_property("pos_setpoint", &motors[1].set_pos_setpoint_args.pos_setpoint),
             Endpoint::make_property("vel_feed_forward", &motors[1].set_pos_setpoint_args.vel_feed_forward),
@@ -329,7 +333,7 @@ void init_communication(void) {
 // read commands out of the UART DMA circular buffer
 void communication_task(void const * argument) {
     (void) argument;
-    
+
 
 #if !defined(UART_PROTOCOL_NONE)
     //DMA open loop continous circular buffer

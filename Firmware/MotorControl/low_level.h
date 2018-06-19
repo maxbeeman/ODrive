@@ -176,7 +176,7 @@ typedef struct {
     uint16_t timing_log[TIMING_LOG_SIZE];
     // Cache for remote procedure calls arguments
     struct {
-        float pos_setpoint; 
+        float pos_setpoint;
         float vel_feed_forward;
         float current_feed_forward;
     } set_pos_setpoint_args;

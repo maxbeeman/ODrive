@@ -40,6 +40,7 @@ const float elec_rad_per_enc = POLE_PAIRS * 2 * M_PI * (1.0f / (float)ENCODER_CP
 
 uint16_t as5047p_data = 0;
 
+
 #if HW_VERSION_MAJOR == 3
 #if HW_VERSION_MINOR <= 3
 #define SHUNT_RESISTANCE (675e-6f)
@@ -171,6 +172,7 @@ Motor_t motors[] = {
             .encoder_angle = 0.0f,
         }
 
+
     },
     {                                             // M1
         .control_mode = CTRL_MODE_POSITION_CONTROL,  //see: Motor_control_mode_t
@@ -232,14 +234,14 @@ Motor_t motors[] = {
         },
         .rotor_mode = ROTOR_MODE_ENCODER,
         .encoder = {
-            .encoder_timer = &htim4,
+            .encoder_timer = &htim3,
             .use_index = false,
             .index_found = false,
-            .calibrated = false,
-            .use_absolute = false,
+            .calibrated = true,
+            .use_absolute = true,
             .idx_search_speed = 10.0f, // [rad/s electrical]
             .encoder_cpr = ENCODER_CPR,
-            .encoder_offset = 0,
+            .encoder_offset = 1142,
             .encoder_state = 0,
             .motor_dir = 1,   // 1 or -1
             .phase = 0.0f,    // [rad]
@@ -273,6 +275,12 @@ Motor_t motors[] = {
             .calib_anticogging = false,
             .calib_pos_threshold = 1.0f,
             .calib_vel_threshold = 1.0f,
+        },
+        .AS5047PEncoder = {
+            .spiHandle = &hspi3,
+            .nCSgpioHandle = GPIO_7_GPIO_Port,
+            .nCSgpioNumber = GPIO_7_Pin,
+            .encoder_angle = 0.0f,
         }
     }
 };
@@ -289,7 +297,7 @@ static float brake_resistance = 0.47f;  // [ohm]
 
 /* Function implementations --------------------------------------------------*/
 
-//--------------------------------
+//--------------------------------d
 // Command Handling
 //--------------------------------
 
@@ -897,7 +905,7 @@ bool motor_calibration(Motor_t* motor) {
  * This anti-cogging implementation iterates through each encoder position,
  * waits for zero velocity & position error,
  * then samples the current required to maintain that position.
- * 
+ *
  * This holding current is added as a feedforward term in the control loop.
  */
 bool anti_cogging_calibration(Motor_t* motor) {
@@ -951,7 +959,7 @@ bool update_init_cnt_value(Motor_t* argument){
 
     // Motor_t* motor = (Motor_t*)argument;
 
-    Motor_t* motor = (Motor_t*)&motors[0];
+    //Motor_t* motor = (Motor_t*)&motors[0];
 
     if (motor->encoder.use_absolute){
         // AEAT_6012_A06_Obj* absEncoder = &motor->absEncoder;
@@ -974,6 +982,7 @@ bool update_init_cnt_value(Motor_t* argument){
 }
 
 void test_encoder(){
+    //for M0
     Motor_t* motor = (Motor_t*)&motors[0];
     AS5047P_Obj* AS5047PEncoder = &motor->AS5047PEncoder;
     as5047p_data = AS5047P_readPosition(AS5047PEncoder);
@@ -985,6 +994,20 @@ void test_encoder(){
     setEncoderCount(motor, (uint32_t)AS5047PEncoder->encoder_cnt);
 
     set_pos_setpoint(motor, AS5047PEncoder->encoder_cnt, 0.0f, 0.0f);
+
+    //for M1
+    Motor_t* motor = (Motor_t*)&motors[1];
+    AS5047P_Obj* AS5047PEncoder = &motor->AS5047PEncoder;
+    as5047p_data = AS5047P_readPosition(AS5047PEncoder);
+    osDelay(100);
+    as5047p_data = as5047p_data & 0x3FFF;
+    AS5047PEncoder->encoder_angle = (as5047p_data/16383.0)*360;
+    AS5047PEncoder->encoder_cnt = (as5047p_data) * 4000/16383;
+
+    setEncoderCount(motor, (uint32_t)AS5047PEncoder->encoder_cnt);
+
+    set_pos_setpoint(motor, AS5047PEncoder->encoder_cnt, 0.0f, 0.0f);
+
 }
 //--------------------------------
 // Main motor control

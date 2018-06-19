@@ -1,5 +1,5 @@
 /**
-  ******************************************************************************
+
   * File Name          : main.h
   * Description        : This file contains the common defines of the application
   ******************************************************************************
@@ -93,6 +93,7 @@
 #define GPIO_3_EXTI_IRQn EXTI2_IRQn
 #define GPIO_4_Pin GPIO_PIN_3
 #define GPIO_4_GPIO_Port GPIOA
+#define GPIO_4_EXTI_IRQn EXTI3_IRQn
 #define M1_TEMP_Pin GPIO_PIN_4
 #define M1_TEMP_GPIO_Port GPIOA
 #define AUX_I_Pin GPIO_PIN_5

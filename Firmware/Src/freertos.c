@@ -147,10 +147,10 @@ void StartDefaultTask(void const * argument)
   init_communication();
 
   osThreadDef(task_as5047p_0, AS5047P_thread, osPriorityHigh+3, 0, 512);
-  // osThreadDef(task_as5047p_1, AS5047P_thread, osPriorityHigh+2, 0, 512);
+  osThreadDef(task_as5047p_1, AS5047P_thread, osPriorityHigh+2, 0, 512);
 
   thread_as5047p_0 = osThreadCreate(osThread(task_as5047p_0), &motors[0]);
-  // thread_as5047p_1 = osThreadCreate(osThread(task_as5047p_1), &motors[1]);
+  thread_as5047p_1 = osThreadCreate(osThread(task_as5047p_1), &motors[1]);
 
   // while (1){
     // HAL_GPIO_WritePin(GPIO_3_GPIO_Port, GPIO_3_Pin, GPIO_PIN_SET);

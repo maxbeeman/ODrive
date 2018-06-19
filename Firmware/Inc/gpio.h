@@ -72,7 +72,7 @@ void MX_GPIO_Init(void);
 
 void SetGPIO12toUART();
 void SetGPIO12toStepDir();
-void SetupENCIndexGPIO();
+// void SetupENCIndexGPIO();
 
 /* USER CODE END Prototypes */
 
